@@ -1,0 +1,26 @@
+[Unit]
+Description=An OctoPrint container.
+After=podman-user-wait-network-online.service
+
+[Container]
+ContainerName=octoprint
+Image=docker.io/octoprint/octoprint:latest
+AutoUpdate=registry
+
+Volume=octoprint.volume
+
+PublishPort=8080:80
+
+# AddDevice=/dev/ttyACM0:/dev/ttyACM0
+
+[Service]
+# Restart service when sleep finishes
+Restart=always
+# Extend Timeout to allow time to pull the image
+TimeoutStartSec=900
+# ExecStartPre flag and other systemd commands can go here, see systemd.unit(5) man page.
+ExecStartPre=/usr/share/mincontainer/setup.sh
+
+[Install]
+# Start by default on boot
+WantedBy=multi-user.target default.target
