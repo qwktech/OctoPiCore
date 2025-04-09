@@ -2,7 +2,7 @@ TEST_QCOW_LINK=https://builds.coreos.fedoraproject.org/prod/streams/stable/build
 TEST_QCOW=${PWD}/test/octopicore-test.qcow2.xz
 
 test-build-image:
-	podman run --rm -it \
+	${CE} run --rm -it \
 	  --pull=always \
 	  -v ${PWD}/build/octopicore.ign:/data/octopicore.ign:ro \
 	  -v ${PWD}/test:/data/test:z \
@@ -10,24 +10,14 @@ test-build-image:
 	  download \
 	    -s ${STREAM} \
 	    -p qemu \
+	    -a aarch64 \
 	    -f qcow2.xz \
 	    --decompress \
 	    -C /data/test
 
+test-clean:
+	${VIRSH} destroy octopicore-test
+	${VIRSH} undefine --remove-all-storage octopicore-test
+
 test:
-ifeq (,$(wildcard ${TEST_QCOW}))
-	wget ${TEST_QCOW_LINK} -o ${TEST_QCOW}
-endif
-ifneq (active,$(shell sudo virsh net-list | column -t -o '#' | grep default | cut -d '#' -f 2))
-	sudo virsh net-start default
-endif
-	sudo virt-install \
-	  --import \
-	  --name=octopicore-test \
-	  --vcpus=2 \
-	  --ram=4096 \
-	  --os-variant=fedora-coreos-stable \
-	  --network=default \
-	  --graphics=none \
-	  --qemu-commandline="-fw_cfg name=opt/com.coreos/config,file=${PWD}/build/octopicore.ign" \
-	  --disk="size=20,backing_store=${TEST_QCOW}"
+	${QEMU} -machine raspi4b ${TEST_QCOW}
