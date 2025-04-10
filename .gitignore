@@ -1,3 +1,4 @@
-keys/*
+keys/octopicore-key
+keys/octopicore-key.pub
 build/*
 *.qcow2*

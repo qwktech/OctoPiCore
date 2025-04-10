@@ -9,6 +9,10 @@ SSH_PASSPHRASE=HelloWorld1!
 CE=flatpak-spawn --host podman
 VIRSH=flatpak-spawn --host virsh
 QEMU=flatpak-spawn --host qemu-system-aarch64
+QEMU_IMG=flatpak-spawn --host qemu-img
+QEMU_NBD=flatpak-spawn --host qemu-nbd
+MODPROBE=flatpak-spawn --host modprobe
+RMMOD=flatpak-spawn --host rmmod
 
 include test/test.mk
 
